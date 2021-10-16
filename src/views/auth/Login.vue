@@ -3,14 +3,14 @@
         <div class="card my-4 col-8 mx-auto">
             <div class="card-header">Login Form</div>
             <div class="card-body">
-                <form>
+                <form @submit.prevent="login">
                     <div class="form-group">
                         <label for="" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" required autofocus>
+                        <input v-model="user.email" type="email" class="form-control" required autofocus>
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Password</label>
-                        <input type="password" class="form-control" required>
+                        <input v-model="user.password" type="password" class="form-control" required>
                     </div>
                     <button class="btn btn-primary my-2" type="submit">Login</button>
                 </form>
@@ -20,8 +20,27 @@
 </template>
 
 <script>
+import authStore from '@/store/auth'
+import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
+
 export default {
-    name: 'Login',
+    setup() {
+        const router = useRouter();
+        const user = reactive({
+            email:'',
+            password: ''
+        })
+
+        let login = async () => {
+            await authStore.dispatch('login', user)
+            router.replace({
+                name: 'Dashboard'
+            })
+        }
+
+        return { user , login}
+    }
 }
 </script>
 
